@@ -207,11 +207,11 @@ class SignupScreenView extends GetView<SignupScreenController> {
                   Obx(
                     () => SizedBox(
                       width: size.width,
-                      height: 40.h,
+                      height: 45.h,
                       child: ElevatedButton(
                         onPressed:
                             controller.isButtonEnabled.value
-                                ? controller.signup
+                                ? () => controller.signup()
                                 : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blueAccent,
@@ -220,10 +220,15 @@ class SignupScreenView extends GetView<SignupScreenController> {
                             borderRadius: BorderRadius.circular(10.r),
                           ),
                         ),
-                        child: const Text(
-                          'Create Account',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                        child:
+                            controller.isLoading.value
+                                ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                                : const Text(
+                                  'Create Account',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                       ),
                     ),
                   ),

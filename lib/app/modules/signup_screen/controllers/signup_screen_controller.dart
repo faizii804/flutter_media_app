@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignupScreenController extends GetxController {
   final fullNameController = TextEditingController();
@@ -11,6 +14,7 @@ class SignupScreenController extends GetxController {
   var isPasswordHidden = true.obs;
   var isConfirmPasswordHidden = true.obs;
   var isButtonEnabled = false.obs;
+  var isLoading = false.obs;
 
   /// 🔹 Password Strength (0 to 1 scale)
   var passwordStrength = 0.0.obs;
@@ -73,21 +77,86 @@ class SignupScreenController extends GetxController {
   }
 
   void validateFields() {
-    final isValid =
-        fullNameController.text.isNotEmpty &&
-        emailController.text.isNotEmpty &&
-        passwordController.text.isNotEmpty &&
-        confirmPasswordController.text.isNotEmpty;
-    isButtonEnabled.value = isValid;
+    final isFullNameValid = fullNameController.text.isNotEmpty;
+    final isEmailValid =
+        emailController.text.isNotEmpty && _isValidEmail(emailController.text);
+    final isPasswordValid = passwordController.text.isNotEmpty;
+    final isConfirmPasswordValid = confirmPasswordController.text.isNotEmpty;
+
+    isButtonEnabled.value =
+        isFullNameValid &&
+        isEmailValid &&
+        isPasswordValid &&
+        isConfirmPasswordValid;
   }
 
-  void signup() {
-    // TODO: Add backend signup logic later
-    Get.snackbar(
-      "Signup Successful",
-      "Account created successfully!",
-      snackPosition: SnackPosition.BOTTOM,
-    );
+  /// 🔹 Email format check
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  Future<void> signup() async {
+    final fullName = fullNameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (fullName.isEmpty || email.isEmpty || password.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'All fields are required',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      // 1️⃣ Firebase Auth signup
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      final uid = userCredential.user!.uid;
+
+      // 2️⃣ Firestore user document creation
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'fullName': fullName,
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      // 3️⃣ Save login info in SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('userId', uid);
+
+      // 4️⃣ Navigate to Home screen
+      Get.offAllNamed('/news-home-screen');
+    } on FirebaseAuthException catch (e) {
+      String message = '';
+      if (e.code == 'email-already-in-use') {
+        message = 'Email already registered';
+      } else if (e.code == 'weak-password') {
+        message = 'Password is too weak';
+      } else if (e.code == 'invalid-email') {
+        message = 'Invalid email';
+      } else {
+        message = e.message ?? 'Signup failed';
+      }
+      Get.snackbar(
+        'Signup Error',
+        message,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Something went wrong: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   final count = 0.obs;
