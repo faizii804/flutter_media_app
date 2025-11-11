@@ -55,7 +55,7 @@ class NewsDetailScreenViewView extends StatelessWidget {
             // News Image
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.network(
+              child: Image.asset(
                 news.imageUrl,
                 width: double.infinity,
                 height: 220,
@@ -77,15 +77,8 @@ class NewsDetailScreenViewView extends StatelessWidget {
             const SizedBox(height: 15),
 
             // Description
-            const Text(
-              "A suicide blast rocked the federal capital on Tuesday, leaving at least 12 martyred and 30 injured outside a kachehri court building, said a spokesperson for the Pakistan Institute of Medical Sciences (PIMS). "
-              "Of the 30 injured brought to the hospital, about five injured are in critical condition, the PIMS spokesperson said. "
-              "Authorities have cordoned off the area and an investigation is underway. "
-              "Security officials have increased vigilance around sensitive areas across the capital. "
-              "Prime Minister and President have condemned the attack and expressed deep sorrow for the loss of precious lives. "
-              "This tragic incident once again highlights the importance of strengthening internal security and unity among citizens to counter such acts of violence. "
-              "More updates will follow as the investigation progresses. "
-              "Citizens are advised to stay cautious and cooperate with law enforcement agencies.",
+            Text(
+              news.description,
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.black87,

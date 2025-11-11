@@ -4,6 +4,7 @@ import 'package:fourdimensions/app/modules/login_screen/controllers/login_screen
 import 'package:fourdimensions/app/modules/news_detail_screen_view/views/news_detail_screen_view_view.dart';
 import 'package:fourdimensions/app/modules/news_home_screen/controllers/news_home_screen_controller.dart';
 import 'package:fourdimensions/app/modules/news_home_screen/models/news_model.dart';
+import 'package:fourdimensions/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
@@ -173,7 +174,7 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(15.r)),
-              child: Image.network(
+              child: Image.asset(
                 news.imageUrl,
                 height: 200.h,
                 width: double.infinity,
@@ -231,7 +232,7 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
                 topLeft: Radius.circular(15.r),
                 bottomLeft: Radius.circular(15.r),
               ),
-              child: Image.network(
+              child: Image.asset(
                 news.imageUrl,
                 width: 120.w,
                 height: 100.h,
@@ -300,7 +301,7 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
       }
       if (Get.isDialogOpen ?? false) Get.back();
 
-      Get.offAllNamed('/login-screen');
+      Get.offAllNamed(Routes.LOGIN_SCREEN);
     } catch (e) {
       if (Get.isDialogOpen ?? false) Get.back();
       print("Logout Error: $e");
