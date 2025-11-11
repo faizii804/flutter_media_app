@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/check_email_screen/bindings/check_email_screen_binding.dart';
+import '../modules/check_email_screen/views/check_email_screen_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login_screen/bindings/login_screen_binding.dart';
@@ -50,6 +52,11 @@ class AppPages {
       name: _Paths.NEWS_DETAIL_SCREEN_VIEW,
       page: () => NewsDetailScreenViewView(news: Get.arguments),
       binding: NewsDetailScreenViewBinding(),
+    ),
+    GetPage(
+      name: _Paths.CHECK_EMAIL_SCREEN,
+      page: () => const CheckEmailScreenView(),
+      binding: CheckEmailScreenBinding(),
     ),
   ];
 }

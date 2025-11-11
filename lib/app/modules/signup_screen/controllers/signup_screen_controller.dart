@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fourdimensions/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -96,6 +97,7 @@ class SignupScreenController extends GetxController {
     return emailRegex.hasMatch(email);
   }
 
+  /// 🔹 Signup with Email Verification
   Future<void> signup() async {
     final fullName = fullNameController.text.trim();
     final email = emailController.text.trim();
@@ -113,25 +115,24 @@ class SignupScreenController extends GetxController {
     try {
       isLoading.value = true;
 
-      // 1️⃣ Firebase Auth signup
+      // 1️⃣ Create user
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       final uid = userCredential.user!.uid;
 
-      // 2️⃣ Firestore user document creation
+      // 2️⃣ Store in Firestore
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
         'fullName': fullName,
         'email': email,
+        'isVerified': false,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      // 3️⃣ Save login info in SharedPreferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', true);
-      await prefs.setString('userId', uid);
+      // 3️⃣ Send Email Verification
+      await userCredential.user!.sendEmailVerification();
 
-      // 4️⃣ Navigate to Home screen
-      Get.offAllNamed('/news-home-screen');
+      // 4️⃣ Navigate to CheckEmailScreen
+      Get.offAllNamed(Routes.CHECK_EMAIL_SCREEN, arguments: uid);
     } on FirebaseAuthException catch (e) {
       String message = '';
       if (e.code == 'email-already-in-use') {
@@ -172,6 +173,10 @@ class SignupScreenController extends GetxController {
 
   @override
   void onClose() {
+    fullNameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
     super.onClose();
   }
 
