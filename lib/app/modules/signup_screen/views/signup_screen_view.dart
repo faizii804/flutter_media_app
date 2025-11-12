@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fourdimensions/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 import '../controllers/signup_screen_controller.dart';
 
 class SignupScreenView extends GetView<SignupScreenController> {
-  SignupScreenView({super.key});
-  final controller = Get.put(SignupScreenController());
+  const SignupScreenView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -77,11 +77,11 @@ class SignupScreenView extends GetView<SignupScreenController> {
                   SizedBox(height: 15.h),
 
                   /// --- Email / Phone Field ---
-                  fieldLabel("Email / Phone Number"),
+                  fieldLabel("Email"),
                   SizedBox(height: 6.h),
                   textField(
                     controller.emailController,
-                    hint: "Email / Phone Number",
+                    hint: "Email",
                     icon: Icons.email_outlined,
                     onChanged: (_) => controller.validateFields(),
                   ),
@@ -244,7 +244,7 @@ class SignupScreenView extends GetView<SignupScreenController> {
                         style: TextStyle(color: Colors.black),
                       ),
                       GestureDetector(
-                        onTap: () => Get.back(),
+                        onTap: () => Get.offAllNamed(Routes.LOGIN_SCREEN),
                         child: Text(
                           "Sign In",
                           style: TextStyle(

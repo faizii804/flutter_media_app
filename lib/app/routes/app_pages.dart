@@ -55,7 +55,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.CHECK_EMAIL_SCREEN,
-      page: () => const CheckEmailScreenView(),
+      page: () => CheckEmailScreenView(),
       binding: CheckEmailScreenBinding(),
     ),
   ];

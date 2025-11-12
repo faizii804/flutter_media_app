@@ -9,26 +9,32 @@ class CheckEmailScreenController extends GetxController {
   var isVerified = false.obs;
   late String uid;
 
-  /// 🔹 Check if user has verified email
   Future<void> checkVerification() async {
     isLoading.value = true;
     try {
       User? user = FirebaseAuth.instance.currentUser;
       await user?.reload();
+      user = FirebaseAuth.instance.currentUser;
+
+      int attempts = 0;
+      while (user != null && !user.emailVerified && attempts < 3) {
+        await Future.delayed(Duration(seconds: 1));
+        await user.reload();
+        user = FirebaseAuth.instance.currentUser;
+        attempts++;
+      }
+
       if (user != null && user.emailVerified) {
         isVerified.value = true;
 
-        // Update Firestore
         await FirebaseFirestore.instance.collection('users').doc(uid).update({
           'isVerified': true,
         });
 
-        // Save login info
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
         await prefs.setString('userId', uid);
 
-        // Navigate to HomeScreen
         Get.offAllNamed(Routes.LOGIN_SCREEN);
       } else {
         Get.snackbar(

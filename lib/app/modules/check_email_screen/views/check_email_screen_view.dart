@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fourdimensions/app/routes/app_pages.dart';
 
 import 'package:get/get.dart';
 
 import '../controllers/check_email_screen_controller.dart';
 
 class CheckEmailScreenView extends GetView<CheckEmailScreenController> {
-  const CheckEmailScreenView({super.key});
+  CheckEmailScreenView({super.key});
+  @override
+  final controller = Get.put(CheckEmailScreenController());
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -16,49 +19,50 @@ class CheckEmailScreenView extends GetView<CheckEmailScreenController> {
         statusBarIconBrightness: Brightness.light,
       ),
     );
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            /// --- Custom AppBar with background image ---
-            Stack(
-              children: [
-                Container(
-                  height: 220.h,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                        'assets/images/appbar.png',
-                      ), // 🔹 your header image
-                      fit: BoxFit.cover,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              /// --- Custom AppBar with background image ---
+              Stack(
+                children: [
+                  Container(
+                    height: 220.h,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(
+                          'assets/images/appbar.png',
+                        ), // 🔹 your header image
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  height: 220.h,
-                  width: double.infinity,
-                  color: Colors.black.withOpacity(
-                    0.3,
-                  ), // light overlay for readability
-                ),
-                Positioned(
-                  top: 60.h,
-                  left: 0,
-                  right: 0,
-                  child: Column(
-                    children: [
-                      Image.asset('assets/logos/logo.png', height: 80.h),
-                    ],
+                  Container(
+                    height: 220.h,
+                    width: double.infinity,
+                    color: Colors.black.withOpacity(
+                      0.3,
+                    ), // light overlay for readability
                   ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Center(
-                child: Obx(
-                  () => Column(
+                  Positioned(
+                    top: 60.h,
+                    left: 0,
+                    right: 0,
+                    child: Column(
+                      children: [
+                        Image.asset('assets/logos/logo.png', height: 80.h),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Center(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
@@ -114,11 +118,11 @@ class CheckEmailScreenView extends GetView<CheckEmailScreenController> {
                         ),
                       ),
                       const SizedBox(height: 30),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50.h,
-                        child: Obx(
-                          () => ElevatedButton(
+                      Obx(
+                        () => SizedBox(
+                          width: double.infinity,
+                          height: 50.h,
+                          child: ElevatedButton(
                             onPressed:
                                 controller.isLoading.value
                                     ? null
@@ -202,12 +206,42 @@ class CheckEmailScreenView extends GetView<CheckEmailScreenController> {
                           ),
                         ),
                       ),
+                      SizedBox(height: 20.h),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 45.h,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Get.offAllNamed(
+                              Routes.SIGNUP_SCREEN,
+                            ); // ⬅️ Wapas previous screen
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                              color: Colors.grey.shade500,
+                              width: 1.5,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            backgroundColor: Colors.grey.shade200,
+                          ),
+                          child: const Text(
+                            "I don't want to verify, Go Back",
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

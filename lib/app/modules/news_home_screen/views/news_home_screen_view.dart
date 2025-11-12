@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fourdimensions/app/modules/login_screen/controllers/login_screen_controller.dart';
-import 'package:fourdimensions/app/modules/news_detail_screen_view/views/news_detail_screen_view_view.dart';
-import 'package:fourdimensions/app/modules/news_home_screen/controllers/news_home_screen_controller.dart';
-import 'package:fourdimensions/app/modules/news_home_screen/models/news_model.dart';
-import 'package:fourdimensions/app/routes/app_pages.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
+import '../controllers/news_home_screen_controller.dart';
+import '../models/news_model.dart';
+import '../../news_detail_screen_view/views/news_detail_screen_view_view.dart';
+import '../../../routes/app_pages.dart';
+import '../../login_screen/controllers/login_screen_controller.dart';
 
 class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
   NewsHomeScreenView({super.key});
-
   final controller = Get.put(NewsHomeScreenController());
 
   @override
@@ -47,94 +49,18 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
               ),
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue[900]),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: SizedBox(
-                      height: 80.h,
-                      width: 80.w,
-                      child: Image(
-                        image: AssetImage('assets/logos/logo.png'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
-                  Center(
-                    child: Text(
-                      '4 Dimensions',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              onTap: () => Get.back(),
-            ),
-            ListTile(
-              leading: const Icon(Icons.public),
-              title: const Text('World'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.sports_soccer),
-              title: const Text('Sports'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.movie),
-              title: const Text('Entertainment'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.currency_bitcoin_sharp),
-              title: const Text('Cryto News'),
-              onTap: () {},
-            ),
-            const Divider(),
-
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text(
-                'Logout',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              onTap: () async {
-                await _performLogout();
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: _buildDrawer(),
       body: Obx(() {
         final news = controller.newsList;
+        if (news.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
         return SingleChildScrollView(
           padding: EdgeInsets.all(12.0.w),
           child: Column(
             children: [
-              // Featured News
               if (news.isNotEmpty) _buildFeaturedCard(news.first),
-
               SizedBox(height: 12.h),
-
-              // Other News
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -150,13 +76,82 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
     );
   }
 
+  Drawer _buildDrawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(color: Colors.blue[900]),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: SizedBox(
+                    height: 80.h,
+                    width: 80.w,
+                    child: Image.asset(
+                      'assets/logos/logo.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                Center(
+                  child: Text(
+                    '4 Dimensions',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
+            onTap: () => Get.back(),
+          ),
+          ListTile(
+            leading: const Icon(Icons.public),
+            title: const Text('World'),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.sports_soccer),
+            title: const Text('Sports'),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.movie),
+            title: const Text('Entertainment'),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.currency_bitcoin_sharp),
+            title: const Text('Crypto News'),
+            onTap: () {},
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
+            onTap: _performLogout,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildFeaturedCard(NewsModel news) {
     return GestureDetector(
-      onTap: () {
-        Get.to(
-          () => NewsDetailScreenViewView(news: news),
-        ); // 👈 navigate to detail screen
-      },
+      onTap: () => Get.to(() => NewsDetailScreenViewView(news: news)),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.r),
@@ -174,7 +169,7 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(15.r)),
-              child: Image.asset(
+              child: Image.network(
                 news.imageUrl,
                 height: 200.h,
                 width: double.infinity,
@@ -195,7 +190,22 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
                     ),
                   ),
                   SizedBox(height: 6.h),
-                  Text(news.time, style: const TextStyle(color: Colors.grey)),
+                  // Time/Source text
+                  StreamBuilder(
+                    stream: Stream.periodic(const Duration(minutes: 1)),
+                    builder: (context, snapshot) {
+                      final formattedTime = timeago.format(
+                        news.timestamp.toDate(),
+                      );
+                      return Text(
+                        "Published $formattedTime",
+                        style: const TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey,
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -226,21 +236,18 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🖼️ News Image (bigger, rounded)
             ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(15.r),
-                bottomLeft: Radius.circular(15.r),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(15),
+                bottomLeft: Radius.circular(15),
               ),
-              child: Image.asset(
+              child: Image.network(
                 news.imageUrl,
                 width: 120.w,
                 height: 100.h,
                 fit: BoxFit.cover,
               ),
             ),
-
-            // 📄 Title & Time
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
@@ -268,7 +275,7 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
                         ),
                         SizedBox(width: 4.w),
                         Text(
-                          news.time,
+                          timeago.format(news.timestamp.toDate()),
                           style: TextStyle(fontSize: 12.sp, color: Colors.grey),
                         ),
                       ],
@@ -285,20 +292,21 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
 
   Future<void> _performLogout() async {
     try {
-      // 1️⃣ Show loader
       Get.dialog(
         const Center(child: CircularProgressIndicator()),
         barrierDismissible: false,
       );
-      await Future.delayed(const Duration(milliseconds: 50));
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
 
       if (Get.isRegistered<NewsHomeScreenController>()) {
         Get.delete<NewsHomeScreenController>();
       }
-
       if (Get.isRegistered<LoginScreenController>()) {
         Get.delete<LoginScreenController>();
       }
+
       if (Get.isDialogOpen ?? false) Get.back();
 
       Get.offAllNamed(Routes.LOGIN_SCREEN);

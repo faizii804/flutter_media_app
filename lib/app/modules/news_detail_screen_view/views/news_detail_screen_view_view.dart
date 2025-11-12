@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fourdimensions/app/modules/news_home_screen/models/news_model.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class NewsDetailScreenViewView extends StatelessWidget {
   final NewsModel news;
@@ -55,7 +56,7 @@ class NewsDetailScreenViewView extends StatelessWidget {
             // News Image
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
+              child: Image.network(
                 news.imageUrl,
                 width: double.infinity,
                 height: 220,
@@ -66,12 +67,18 @@ class NewsDetailScreenViewView extends StatelessWidget {
             const SizedBox(height: 6),
 
             // Time/Source text
-            Text(
-              "Published ${news.time} • 4 Dimensions Digital",
-              style: const TextStyle(
-                fontStyle: FontStyle.italic,
-                color: Colors.grey,
-              ),
+            StreamBuilder(
+              stream: Stream.periodic(const Duration(minutes: 1)),
+              builder: (context, snapshot) {
+                final formattedTime = timeago.format(news.timestamp.toDate());
+                return Text(
+                  "Published $formattedTime • 4 Dimensions Digital",
+                  style: const TextStyle(
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey,
+                  ),
+                );
+              },
             ),
 
             const SizedBox(height: 15),

@@ -5,8 +5,7 @@ import 'package:get/get.dart';
 import '../controllers/login_screen_controller.dart';
 
 class LoginScreenView extends GetView<LoginScreenController> {
-  LoginScreenView({super.key});
-  final controller = Get.put(LoginScreenController());
+  const LoginScreenView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -67,13 +66,12 @@ class LoginScreenView extends GetView<LoginScreenController> {
                   SizedBox(height: 20.h),
 
                   /// --- Email / Phone Field ---
-                  /// --- Email / Phone Field ---
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       RichText(
                         text: TextSpan(
-                          text: 'Email / Phone Number ',
+                          text: 'Email ',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 13.sp,
@@ -92,7 +90,7 @@ class LoginScreenView extends GetView<LoginScreenController> {
                         style: const TextStyle(color: Colors.black),
                         controller: controller.emailController,
                         decoration: InputDecoration(
-                          hintText: 'Email / Phone Number',
+                          hintText: 'Email',
                           hintStyle: TextStyle(
                             color: Colors.grey,
                             fontSize: 12.sp,
