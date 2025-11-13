@@ -15,14 +15,16 @@ class LoginScreenController extends GetxController {
   var rememberMe = false.obs;
   var isLoading = false.obs;
   final _googleSignIn = GoogleSignIn();
+  var isSigningIn = false.obs;
 
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
   /// Call this from the Gmail button onTap
   Future<void> signInWithGoogle() async {
+    if (isSigningIn.value) return;
     try {
-      isLoading.value = true;
+      isSigningIn.value = true;
 
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
@@ -91,6 +93,9 @@ class LoginScreenController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       Get.snackbar('Error', e.toString(), snackPosition: SnackPosition.BOTTOM);
+    }
+    finally{
+      isSigningIn.value = false;
     }
   }
 

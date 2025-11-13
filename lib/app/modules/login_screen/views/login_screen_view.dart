@@ -284,35 +284,49 @@ class LoginScreenView extends GetView<LoginScreenController> {
                         SizedBox(height: 15.h),
 
                         // 🔹 Only Gmail Button Centered
-                        GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            width: 50.w,
-                            height: 50.w,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.grey.shade300,
-                                width: 1.5,
-                              ),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 3),
+                        Obx(() {
+                          return GestureDetector(
+                            onTap:
+                                controller.isSigningIn.value
+                                    ? null
+                                    : controller
+                                        .signInWithGoogle, // disable if already signing
+                            child: Container(
+                              width: 50.w,
+                              height: 50.w,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.grey.shade300,
+                                  width: 1.5,
                                 ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(8.w),
-                              child: Image.asset(
-                                'assets/logos/gmaillogo.png',
-                                fit: BoxFit.contain,
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
                               ),
+                              child:
+                                  controller.isSigningIn.value
+                                      ? Padding(
+                                        padding: EdgeInsets.all(12.w),
+                                        child: const CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                      : Padding(
+                                        padding: EdgeInsets.all(8.w),
+                                        child: Image.asset(
+                                          'assets/logos/gmaillogo.png',
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                       ],
                     ),
                   ),

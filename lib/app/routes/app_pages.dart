@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-
 import '../modules/check_email_screen/bindings/check_email_screen_binding.dart';
 import '../modules/check_email_screen/views/check_email_screen_view.dart';
 import '../modules/forgot_password_screen/bindings/forgot_password_screen_binding.dart';
