@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fourdimensions/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 import '../controllers/login_screen_controller.dart';
 
@@ -193,7 +194,9 @@ class LoginScreenView extends GetView<LoginScreenController> {
                         ],
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.offAllNamed(Routes.FORGOT_PASSWORD_SCREEN);
+                        },
                         child: Text(
                           'Forgot Password?',
                           style: TextStyle(color: Colors.blue, fontSize: 12.sp),

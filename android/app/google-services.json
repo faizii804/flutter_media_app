@@ -12,7 +12,20 @@
           "package_name": "com.example.fourdimensions"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1075767885823-q8nnafh3v7vr5g8a09jbf078e7v0mmpc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fourdimensions",
+            "certificate_hash": "8a997b53c9982f7502b80c917a8a0329796db46d"
+          }
+        },
+        {
+          "client_id": "1075767885823-m3cm88ka87k85dkrodtti96m6pd6ggbp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC2JqvL6TZ6Pyb7Ubtu7iM5bInQVNKSA_o"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1075767885823-m3cm88ka87k85dkrodtti96m6pd6ggbp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1075767885823-ke1km2cf1sn9raor8bnprdl67vpo084c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fourdimensions"
+              }
+            }
+          ]
         }
       }
     }

@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/check_email_screen/bindings/check_email_screen_binding.dart';
 import '../modules/check_email_screen/views/check_email_screen_view.dart';
+import '../modules/forgot_password_screen/bindings/forgot_password_screen_binding.dart';
+import '../modules/forgot_password_screen/views/forgot_password_screen_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login_screen/bindings/login_screen_binding.dart';
@@ -57,6 +59,11 @@ class AppPages {
       name: _Paths.CHECK_EMAIL_SCREEN,
       page: () => CheckEmailScreenView(),
       binding: CheckEmailScreenBinding(),
+    ),
+    GetPage(
+      name: _Paths.FORGOT_PASSWORD_SCREEN,
+      page: () => ForgotPasswordScreenView(),
+      binding: ForgotPasswordScreenBinding(),
     ),
   ];
 }

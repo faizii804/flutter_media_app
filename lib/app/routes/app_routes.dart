@@ -10,6 +10,7 @@ abstract class Routes {
   static const NEWS_HOME_SCREEN = _Paths.NEWS_HOME_SCREEN;
   static const NEWS_DETAIL_SCREEN_VIEW = _Paths.NEWS_DETAIL_SCREEN_VIEW;
   static const CHECK_EMAIL_SCREEN = _Paths.CHECK_EMAIL_SCREEN;
+  static const FORGOT_PASSWORD_SCREEN = _Paths.FORGOT_PASSWORD_SCREEN;
 }
 
 abstract class _Paths {
@@ -21,4 +22,5 @@ abstract class _Paths {
   static const NEWS_HOME_SCREEN = '/news-home-screen';
   static const NEWS_DETAIL_SCREEN_VIEW = '/news-detail-screen-view';
   static const CHECK_EMAIL_SCREEN = '/check-email-screen';
+  static const FORGOT_PASSWORD_SCREEN = '/forgot-password-screen';
 }
