@@ -83,7 +83,7 @@ class LoginScreenController extends GetxController {
       Get.offAllNamed(Routes.NEWS_HOME_SCREEN);
 
       isLoading.value = false;
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       isLoading.value = false;
       String msg = 'Google sign-in failed. Try again.';
 
