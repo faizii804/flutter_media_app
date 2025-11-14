@@ -5,19 +5,41 @@ import 'dart:async';
 
 class NewsHomeScreenController extends GetxController {
   var newsList = <NewsModel>[].obs;
+  var selectedCategory = "All".obs;
   Timer? _timer;
+  var isLoading = false.obs;
+
+  void changeCategory(String category) {
+    selectedCategory.value = category;
+    fetchNewsFromFirebase();
+  }
+
   void fetchNewsFromFirebase() async {
     try {
-      final snapshot =
-          await FirebaseFirestore.instance
-              .collection('news')
-              .orderBy('timestamp', descending: true)
-              .get();
+      isLoading.value = true; // start loading
 
-      if (snapshot.docs.isEmpty) {
-        print("No news found in Firebase!");
+      Query<Map<String, dynamic>> query = FirebaseFirestore.instance.collection(
+        'news',
+      );
+
+      // Agar All select nahi hai, filter by category
+      if (selectedCategory.value != "All") {
+        query = query.where('category', isEqualTo: selectedCategory.value);
       }
 
+      // Order by timestamp descending
+      final snapshot = await query.orderBy('timestamp', descending: true).get();
+
+      // Check if no news found
+      if (snapshot.docs.isEmpty) {
+        print(
+          "No news found in Firebase for category: ${selectedCategory.value}",
+        );
+        newsList.value = []; // empty list for UI
+        return;
+      }
+
+      // Map documents to NewsModel
       final loadedNews =
           snapshot.docs.map((doc) {
             final data = doc.data();
@@ -30,10 +52,13 @@ class NewsHomeScreenController extends GetxController {
             );
           }).toList();
 
-      newsList.value = loadedNews;
+      newsList.value = loadedNews; // update observable list
       print("News loaded: ${newsList.length}");
     } catch (e) {
       print("Error fetching news: $e");
+      newsList.value = []; // error case: empty list
+    } finally {
+      isLoading.value = false; // stop loading
     }
   }
 

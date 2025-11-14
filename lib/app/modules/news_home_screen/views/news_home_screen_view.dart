@@ -52,26 +52,44 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
       drawer: _buildDrawer(),
       body: Obx(() {
         final news = controller.newsList;
-        if (news.isEmpty) {
+        final isLoading = controller.isLoading.value;
+
+        if (isLoading) {
+          // Jab data fetch ho raha ho
           return const Center(child: CircularProgressIndicator());
-        }
-        return SingleChildScrollView(
-          padding: EdgeInsets.all(12.0.w),
-          child: Column(
-            children: [
-              if (news.isNotEmpty) _buildFeaturedCard(news.first),
-              SizedBox(height: 12.h),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: news.length - 1,
-                itemBuilder: (context, index) {
-                  return _buildNewsCard(news[index + 1]);
-                },
+        } else if (news.isEmpty) {
+          // Jab news empty ho
+          return Center(
+            child: Text(
+              "There is no news available yet.",
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[700],
               ),
-            ],
-          ),
-        );
+              textAlign: TextAlign.center,
+            ),
+          );
+        } else {
+          // Jab news available ho
+          return SingleChildScrollView(
+            padding: EdgeInsets.all(12.0.w),
+            child: Column(
+              children: [
+                if (news.isNotEmpty) _buildFeaturedCard(news.first),
+                SizedBox(height: 12.h),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: news.length - 1,
+                  itemBuilder: (context, index) {
+                    return _buildNewsCard(news[index + 1]);
+                  },
+                ),
+              ],
+            ),
+          );
+        }
       }),
     );
   }
@@ -110,31 +128,12 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
               ],
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Home'),
-            onTap: () => Get.back(),
-          ),
-          ListTile(
-            leading: const Icon(Icons.public),
-            title: const Text('World'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.sports_soccer),
-            title: const Text('Sports'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.movie),
-            title: const Text('Entertainment'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.currency_bitcoin_sharp),
-            title: const Text('Crypto News'),
-            onTap: () {},
-          ),
+
+          _drawerItem(Icons.home, "Home", "All"),
+          _drawerItem(Icons.public, "World", "World"),
+          _drawerItem(Icons.sports_soccer, "Sports", "Sports"),
+          _drawerItem(Icons.movie, "Entertainment", "Entertainment"),
+          _drawerItem(Icons.currency_bitcoin_sharp, "Crypto News", "Crypto"),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
@@ -146,6 +145,17 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _drawerItem(IconData icon, String title, String category) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      onTap: () {
+        Get.back();
+        controller.changeCategory(category);
+      },
     );
   }
 
