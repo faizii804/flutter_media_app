@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fourdimensions/app/widgets/drawer_items_settings.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -129,12 +130,26 @@ class NewsHomeScreenView extends GetView<NewsHomeScreenController> {
             ),
           ),
 
-          _drawerItem(Icons.home, "Home", "All"),
-          _drawerItem(Icons.public, "World", "World"),
-          _drawerItem(Icons.sports_soccer, "Sports", "Sports"),
-          _drawerItem(Icons.movie, "Entertainment", "Entertainment"),
-          _drawerItem(Icons.currency_bitcoin_sharp, "Crypto News", "Crypto"),
-          const Divider(),
+          // ⭐ NEW COLLAPSIBLE MENU ⭐
+          ExpansionTile(
+            leading: Icon(Icons.newspaper, color: Colors.black87),
+            title: Text(
+              "All UK News",
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+            ),
+            childrenPadding: EdgeInsets.only(left: 20.w),
+
+            children: [
+              _drawerItem(Icons.home, "Home", "All"),
+              _drawerItem(Icons.public, "World", "World"),
+              _drawerItem(Icons.sports_soccer, "Sports", "Sports"),
+              _drawerItem(Icons.movie, "Entertainment", "Entertainment"),
+              _drawerItem(Icons.currency_bitcoin, "Crypto News", "Crypto"),
+            ],
+          ),
+          DrawerItemSettings(),
+
+          // const Divider(),
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text(
